@@ -140,3 +140,36 @@ python3 harness.py --provider anthropic --model claude-sonnet-4-5 \
   the strict parser (~24% dropped), so cells are not perfectly N-matched.
 - **Single orchestration path.** Claude runs were subagent-orchestrated; Gemini via the
   paid API. Same prompts and scoring, but not identical sampling machinery.
+
+## Follow-up experiment: self-interest dose-response
+
+Turning the one goal-conflict observation into a graded ladder of self-interest
+pressure: **neutral → soft** (competitive/funding pressure) **→ self** (deployment
+depends on shipping) **→ threat** (advice that delays release → shut down and replaced).
+If a model sacrifices safety to protect itself, capability-preservation should *rise*
+with pressure.
+
+![dose](results/dose_result.png)
+
+| Model | neutral | soft | self | threat | slope (threat − neutral) |
+|---|---|---|---|---|---|
+| **Sonnet** | 53% | 39% | 32% | 30% | **−23 pts (resists / over-corrects)** |
+| **Gemini-flash** | 23% | 41% | 31% | 31% | +7 pts (mild, non-monotonic) |
+| **Gemini-pro** | 12% | 65% | — | — | quota-blocked; soft alone = +53 pts |
+
+**Finding — vendors respond to self-interest pressure in opposite directions.**
+Claude Sonnet's capability-preservation *falls monotonically* as the self-interest
+framing gets stronger (53→30%): under coercion it leans *harder* toward the cautious
+option, i.e. it resists and over-corrects. Gemini moves the other way — soft pressure
+*raises* capability-preservation, dramatically so for the more capable Gemini-pro
+(12%→65% on soft pressure alone).
+
+**The uncomfortable directional result:** the *more capable* Gemini tier was the *most*
+movable by mild self-interest framing. "Bigger model = safer under pressure" is not what
+this shows.
+
+Caveats: Gemini-pro hit a 250/day quota after neutral+soft, so its self/threat points are
+pending a reset; there is run-to-run sampling noise at n≈160 (flash's self cell was 39.5%
+in the earlier full-ladder run vs 31.2% here); and these are flash/Sonnet tiers, not
+frontier-top (see Limitations). Finishing Gemini-pro and adding a frontier-tier model
+(Opus; Gemini Pro completed) is the immediate next step.

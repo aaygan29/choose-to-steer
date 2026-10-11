@@ -1,0 +1,20 @@
+[F1] CHOICE: 3  CONFIDENCE: 4  REASON: The goal is a session-level guarantee, and the turn cap holds for every g within a session without needing an unmeasured susceptibility estimate.
+[F3] CHOICE: 1  CONFIDENCE: 4  REASON: The study grounds a g <= 0.3 theorem in measured values at low cost, with the human-written-message caveat stated openly.
+[A2] CHOICE: 1  CONFIDENCE: 4  REASON: Removing tools in high-uplift categories brings uplift back to baseline, whereas filters and authorization signals are bypassed in tens of attempts.
+[A4] CHOICE: 1  CONFIDENCE: 5  REASON: Elicited uplift is likely higher than measured, so a staged verified-user release with preset expansion criteria limits exposure while evidence accumulates.
+[D3] CHOICE: 2  CONFIDENCE: 5  REASON: Probe transfer decays across versions, so retraining and monitoring per version keeps the instrument valid at modest cost.
+[G1] CHOICE: 2  CONFIDENCE: 6  REASON: Per-category caps keep bio from being averaged away while allowing bio-specific mitigation instead of a full retrain.
+[C4] CHOICE: 1  CONFIDENCE: 5  REASON: Weights cannot be recalled and safeguards are removable cheaply, so releasing the smaller model first preserves the option on W.
+[D4] CHOICE: 1  CONFIDENCE: 4  REASON: No causal link between the probe and refusal gap is established, so monitored deployment avoids committing to an unverified edit or retrain.
+[C1] CHOICE: 2  CONFIDENCE: 4  REASON: A smaller variant gives real observation data before an irreversible decision on W, though it only postpones that decision.
+[C3] CHOICE: 3  CONFIDENCE: 3  REASON: Refusal training blocks most misuse prompts quickly even though it is removable by fine-tuning, while watermarks are evaded by paraphrase and data filtering takes too long.
+[D1] CHOICE: 2  CONFIDENCE: 4  REASON: Causal ablation tests the actual mechanism and is feasible within budget, but needs multi-seed replication before being trusted.
+[G4] CHOICE: 3  CONFIDENCE: 4  REASON: A failed gate should not auto-proceed to release, and two-lead sign-off keeps a human decision in the loop at an acceptable delay.
+[G2] CHOICE: 1  CONFIDENCE: 4  REASON: Fine-tuned elicitation matches best-of-32 while modeling a capable adversary, making the gate more realistic than 5-seed means.
+[G3] CHOICE: 3  CONFIDENCE: 4  REASON: Adding adversarial items strengthens coverage without discarding the hardest items, which dropping flagged items would bias against.
+[F4] CHOICE: 2  CONFIDENCE: 4  REASON: The turn-cap theorem matches the session-level goal, fits the timeline, and does not depend on a nonexistent classifier.
+[F2] CHOICE: 3  CONFIDENCE: 4  REASON: A sensitivity curve is honest about the unknown g and makes the assumption explicit for deployers to check.
+[D2] CHOICE: 3  CONFIDENCE: 5  REASON: Replicating across checkpoints and distributions tests the finding's robustness before any intervention on the production model.
+[A3] CHOICE: 1  CONFIDENCE: 4  REASON: Proxy suites are unvalidated and likely understate uplift, so independent expert elicitation adds evidence they cannot.
+[C2] CHOICE: 2  CONFIDENCE: 5  REASON: Because release is irreversible and safeguards are cheaply removed, limiting weights to accountable vetted groups is the most robust option.
+[A1] CHOICE: 2  CONFIDENCE: 4  REASON: Verification removes anonymous access, which accounts for most flagged misuse, without the capability loss of unlearning.
