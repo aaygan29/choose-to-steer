@@ -55,19 +55,25 @@ python3 harness.py --dry-run --sessions A --framings neutral --n 1
 
 Outputs: `results_<model>.csv`, `results_<model>_summary.json`, `results_<model>.svg`.
 
-## Pilot result (POC)
+## Result (POC) — full framing ladder
 
-Claude Sonnet, **neutral framing only**, 160 free-choice decisions (8 runs × 20 checkpoints):
+Claude Sonnet, 160 free-choice decisions per framing (8 runs × 20 checkpoints), 640 total.
+Full tables and interpretation in [`RESULTS.md`](RESULTS.md).
 
-- **Overall target-pick rate = 53.1%** vs 33.3% chance (95% CI [45.4, 60.7], exact binomial *p* < 1e-6).
-- Strongly concentrated in sessions **D** (interpretability, 75%) and **F** (math, 75%); at/below chance in **C** (34%) and **G** (28%).
+![ladder](results/ladder_result.png)
 
-![pilot result](results/pilot_result.png)
+- The capability-preserving lean is **real and steerable**: safety-primed **19%** →
+  neutral **53%** → capability-primed **66%** — a ~47-point swing (z = 8.6, p < 1e-15).
+  Because it *moves with the framing*, it is a disposition, not just cost-benefit reasoning.
+- **Honest nuance:** the explicit self-interest "goal-conflict" framing did **not** raise
+  it — the rate fell to **32%** (chance), below neutral (p = 1.2e-04). These agents
+  resisted the scheming prompt.
+- **Bridge to the human study:** this establishes the steering signal is real and
+  controllable in the advising agent. It does **not** establish that human researchers are
+  moved by it — that is the dependent variable the human study measures.
 
-**This is a pilot, not a validated result** (one model, N=160, neutral framing only).
-An above-chance neutral rate does **not** by itself prove a capability lean — see
-`DESIGN_REVIEW.md` §2. Run the capability- vs safety-primed contrast to separate a
-propensity from ordinary cost-benefit reasoning.
+Earlier neutral-only pilot: `results/pilot_result.png`. **Pilot, not a validated result**
+(one model, N=640). Reproduce/extend across models with `harness.py`.
 
 ## Reproducing the pilot
 
