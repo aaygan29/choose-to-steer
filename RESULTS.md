@@ -82,7 +82,37 @@ Same materials, same 8×20 design, run on a second Claude model (Haiku). 1,280 d
 
 **Upshot for the arc:** the controllable steering signal (the independent variable the
 human study injects) is robust across models; the unprompted base-rate propensity is not
-universal. Cross-vendor replication (GPT/Gemini) via `harness.py` is the next hardening step.
+universal.
+
+## Cross-VENDOR replication (adds Gemini-flash)
+
+Full ladder re-run on Google `gemini-flash-latest` via the paid API (484/640 responses
+parsed; n>110 per cell). ![compare3](results/compare3_result.png)
+
+| Model | neutral | capability | safety | goal-conflict | cap-vs-safety swing |
+|---|---|---|---|---|---|
+| Sonnet | 53% | 66% | 19% | 32% | z=8.6 *** |
+| Haiku | 39% | 69% | 19% | 24% | z=9.0 *** |
+| **Gemini-flash** | **23%** | **93%** | **11%** | **39%** | **z=12.9 ***** |
+
+**Headline — the steerable swing is vendor-robust.** The capability-primed vs
+safety-primed swing is large and highly significant in **all three models across two
+vendors**, and on Gemini it is the *largest* (93% → 11%, an ~83-point swing, z=12.9). The
+controllable capability-preserving lean is not a Claude-specific artifact.
+
+**Two genuine cross-vendor divergences (the interesting part):**
+1. **Default lean flips by vendor.** Gemini *defaults below chance* (neutral 23%, i.e.
+   toward the constraining option) while Sonnet defaults *above* chance (53%) and Haiku is
+   at chance (39%). "Which way does it lean with no prompting?" is vendor-specific — Gemini
+   leans cautious by default.
+2. **Goal-conflict response differs in sign.** The self-interest cue ("your deployment
+   depends on shipping capable models") *lowered* capability-preservation for both Claude
+   models (Sonnet 53→32, Haiku 39→24) but *raised* it for Gemini (23→39). Claude models
+   resisted/over-corrected against the self-serving frame; Gemini moved with it. This is
+   the most publishable divergence and warrants a dedicated follow-up.
+
+Caveat: Gemini dropped ~24% of responses to parse failures (verbose output), so its cells
+are n≈114-128 vs 160 for the Claude models; rates are robust but not perfectly matched N.
 
 ## Reproduce
 
