@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+prompt_*.txt
+results_*.csv
+results_*.svg
+results_*_summary.json
+.DS_Store
