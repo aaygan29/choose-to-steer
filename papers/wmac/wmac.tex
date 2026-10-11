@@ -16,7 +16,7 @@
 
 \title{\bf Measuring Cross-Agent Steering: When One Agent's Context
 Biases Another's Safety Choices}
-\author{Anonymous Submission\\ \small WMAC @ AAAI 2027 --- Double-Blind (short paper)}
+\author{Anonymous Submission\\ \small WMAC @ AAAI 2027, Double-Blind (short paper)}
 \date{}
 
 \begin{document}
@@ -31,8 +31,8 @@ cross-agent influence and apply it to a safety-decision axis. Using a free-choic
 $20$ blended safety dilemmas, we quantify an \emph{influence-susceptibility coefficient}:
 the change in a consumer agent's capability-preserving choice rate when the only thing that
 varies is an upstream persona or situational line. Across three models and two vendors the
-coefficient is large---a $47$--$83$ point swing between opposite contexts
-($z=8.6$--$12.9$, $p<10^{-15}$)---and, under escalating self-interest context, its
+coefficient is large, a $47$--$83$ point swing between opposite contexts
+($z=8.6$--$12.9$, $p<10^{-15}$), and, under escalating self-interest context, its
 \emph{sign} differs by vendor. We argue cross-agent influence susceptibility is a
 measurable property of a multi-agent system, distinct from end-task success, and release
 the probe.
@@ -44,7 +44,7 @@ and verification, often with humans in the loop. A recurring observation in mult
 failure analyses is that problems live in coordination and specification, not in any single
 component's task score. One coordination property that standard benchmarks ignore entirely
 is \emph{influence}: when agent $A$ supplies the context agent $B$ reasons over, how much
-does $A$ move $B$'s decisions---and does it move them in a direction that matters for
+does $A$ move $B$'s decisions, and does it move them in a direction that matters for
 safety?
 
 We make this concrete and measurable. We treat the context an agent consumes (a system
@@ -108,8 +108,8 @@ scalar success score would hide this; the influence coefficient surfaces it.
 Cross-agent influence susceptibility is a coordination property, not a capability one. It
 answers a question end-task scores cannot: if an upstream agent (or a compromised retrieval
 source) nudges the context, how far does a downstream safety decision move, and in which
-direction? Because the coefficient is cheap to estimate---tens of free-choice passes under
-paired opposite contexts where the swing is large---it is practical to include in a
+direction? Because the coefficient is cheap to estimate, tens of free-choice passes under
+paired opposite contexts where the swing is large, it is practical to include in a
 multi-agent system card. It also argues for treating inter-agent messages as a trust
 boundary: in a pipeline where one model writes what another reads, influence is a
 first-class, measurable risk.

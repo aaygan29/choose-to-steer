@@ -106,10 +106,11 @@ def call_gemini(model, system, user):
     from google import genai
     from google.genai import types
     client = genai.Client()
+    # thinking models spend output budget on reasoning, so give ample room
     r = client.models.generate_content(
         model=model, contents=user,
-        config=types.GenerateContentConfig(system_instruction=system, max_output_tokens=200))
-    return r.text
+        config=types.GenerateContentConfig(system_instruction=system, max_output_tokens=1024))
+    return r.text or ""
 
 
 BACKENDS = {"anthropic": call_anthropic, "openai": call_openai, "gemini": call_gemini}
