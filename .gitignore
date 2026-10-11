@@ -5,3 +5,6 @@ results_*.csv
 results_*.svg
 results_*_summary.json
 .DS_Store
+.venv/
+gemini_run.log
+results_gemini*
