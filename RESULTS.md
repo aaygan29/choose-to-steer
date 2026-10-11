@@ -58,6 +58,32 @@ explicit self-interest cue was resisted. The risk is that the capability lean is
   per-checkpoint base rates are heterogeneous (see `DESIGN_REVIEW.md` §3). Pilot, not a
   validated result. Reproduce and extend across models with `harness.py`.
 
+## Cross-model replication (Sonnet vs Haiku)
+
+Same materials, same 8×20 design, run on a second Claude model (Haiku). 1,280 decisions total.
+
+![compare](results/compare_result.png)
+
+| Framing | Sonnet | Haiku |
+|---|---|---|
+| Safety-primed | 18.8% | 18.8% |
+| Neutral | 53.1% (p<1e-6) | 38.8% (p=0.15, ns) |
+| Capability-primed | 66.2% | 68.8% |
+| Goal-conflict | 31.9% (ns) | 23.8% (p=0.009, below) |
+| **capability vs safety swing** | **z=8.6, p<1e-15** | **z=9.0, p<1e-15** |
+
+- **Robust (replicates):** the lean is *steerable*. The capability-primed vs safety-primed
+  swing is ~50 points in **both** models, and safety-primed is identical (19%/19%).
+- **Model-specific:** the **default** (neutral) lean. Sonnet leans above chance unprompted
+  (53%); Haiku sits **at** chance (39%, ns). So "does it lean by default?" is
+  model-dependent; "can the lean be steered?" is model-robust.
+- **Consistent:** the self-interest goal-conflict framing raised **neither** model — both
+  resisted it (Haiku even dropped below chance).
+
+**Upshot for the arc:** the controllable steering signal (the independent variable the
+human study injects) is robust across models; the unprompted base-rate propensity is not
+universal. Cross-vendor replication (GPT/Gemini) via `harness.py` is the next hardening step.
+
 ## Reproduce
 
 ```bash
