@@ -10,3 +10,11 @@ gemini_run.log
 /results_gemini*
 !results/results_gemini-flash-latest.csv
 !results/results_gemini-flash-latest_summary.json
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/b1.log
+paper/b2.log
+paper/build1.log
+paper/build2.log
+paper/*.png

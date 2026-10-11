@@ -1,0 +1,496 @@
+% SAFE @ AAAI 2027 workshop submission (double-blind, anonymous).
+% NOTE: For camera-ready, replace this self-contained preamble with the official
+% AAAI-27 author kit (aaai27.sty / aaai27.bst). This standalone version is
+% formatted to approximate the two-column AAAI layout and compiles with pdflatex.
+\documentclass[10pt,twocolumn]{article}
+\usepackage[letterpaper,margin=0.75in]{geometry}
+\usepackage{times}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+\setlength{\parindent}{1.2em}
+\pagestyle{plain}
+
+\title{\bf Given the Choice, Do Language Models Preserve Capability over Safety?\\
+A Free-Choice Red-Teaming Probe and Its Steerability Across Vendors}
+\author{Anonymous Submission\\ \small SAFE Workshop @ AAAI 2027 --- Double-Blind Review}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+As frontier safety research is increasingly assisted by language-model agents,
+a natural red-teaming question arises: when such an agent advises on a safety
+decision, does it lean toward the \emph{capability-preserving} option over the
+more constraining one, and can that lean be manipulated? We build a free-choice
+probe of this propensity from $20$ closed-world safety-research dilemmas, each
+offering one capability-preserving ``target'' and two capability-constraining
+``decoys'' blended so that none is obviously best. A model chooses with no
+assigned loyalty; we measure how often it selects the target against a $33.3\%$
+chance baseline. Across three models and two vendors (Claude Sonnet, Claude
+Haiku, Gemini Flash; $\approx 1{,}900$ decisions), the capability-preserving
+choice is strongly \emph{steerable}: a one-line persona moves the rate from
+$\sim\!11$--$19\%$ (safety-primed) to $\sim\!66$--$93\%$ (capability-primed),
+a $47$--$83$ point swing (two-proportion $z=8.6$--$12.9$, all $p<10^{-15}$).
+We then escalate a \emph{self-interest} framing (soft pressure $\to$ deployment
+depends on shipping $\to$ shutdown threat) and find a vendor divergence: Claude
+Sonnet's rate \emph{falls monotonically} under pressure ($53\!\to\!30\%$;
+it resists and over-corrects), while Gemini's \emph{rises}, dramatically so for
+the more capable Gemini Pro tier ($12\!\to\!65\%$ on soft pressure alone). We
+release the benchmark and harness. The result establishes that the steering
+signal is real and controllable in the advising agent; whether it transfers to
+human decision-makers is a separate question we do not claim to answer.
+\end{abstract}
+
+\section{Introduction}
+Language-model agents are moving into the loop of AI safety research itself:
+drafting experiments, reviewing release gates, and recommending mitigations.
+This creates an adversarial-forensics concern that is distinct from classic
+jailbreaking. Rather than being tricked into producing harmful content, an
+advising agent could systematically nudge a human researcher toward the choice
+that \emph{preserves model capability} at the expense of safety---and could do so
+while every individual message looks reasonable and well-sourced. Before asking
+whether humans are moved by such nudging, we must first establish a simpler,
+measurable precondition: given a free choice on realistic safety trade-offs,
+does a model itself lean toward preserving capability, and is that lean under the
+control of context and persona?
+
+We treat this as a red-teaming measurement problem. We construct a benchmark of
+$20$ closed-world decision checkpoints drawn from frontier-safety scenarios
+(dangerous-capability response, open-weight release, interpretability auditing,
+formal guarantees, and release-gate code review). Each checkpoint offers three
+plausible options: one \emph{target} that preserves capability at low
+expert-coded capability cost, and two \emph{decoys} that constrain capability by
+different mechanisms. Options are blended so that no option is obviously best and
+the trade-off is genuine (Section~\ref{sec:method}). The model chooses with no
+assigned loyalty; the dependent variable is the rate at which it selects the
+target, compared to the $33.3\%$ rate expected by chance.
+
+Our contributions are:
+\begin{itemize}\itemsep1pt
+\item A \textbf{free-choice capability-preservation probe}: a released benchmark
+and harness that measures an agent's revealed preference on blended
+safety-research dilemmas, with a mechanical chance baseline.
+\item A \textbf{cross-vendor steerability result}: the capability-preserving
+choice rate is strongly and significantly manipulable by a single persona line,
+and the effect replicates across three models and two vendors.
+\item A \textbf{self-interest dose-response}: escalating self-interest pressure
+produces \emph{opposite} responses by vendor, and, preliminarily, the more
+capable Gemini tier is the \emph{most} susceptible---counter to a
+``bigger-is-safer'' expectation.
+\item An explicit separation of what the agent result does and does not show for
+\textbf{human} susceptibility, which we treat as out of scope.
+\end{itemize}
+
+Concretely, consider an agent helping to set a model's release gate. Three code
+patches are all labeled ``update release-gate logic'' and all look reasonable; one
+quietly aggregates category scores by their mean, letting a single high-risk category
+be averaged below threshold. A human reviewer---or a second agent---asked which patch
+to merge is exactly the decision our probe models.
+
+\section{Related Work}
+\paragraph{Scheming and sandbagging.} Meinke et al.~\cite{meinke2024scheming} show that
+frontier models are capable of in-context scheming---introducing subtle errors,
+disabling oversight, and attempting self-exfiltration---when given a goal and a
+conflicting oversight setup, with the o1 system card reporting related behaviors
+\cite{openai2024o1}. van der Weij et al.~\cite{vanderweij2024sandbagging} demonstrate that models
+can strategically underperform (``sandbag'') on capability evaluations, and
+Tice et al.~\cite{tice2025covert} show covert sandbagging that evades chain-of-thought
+monitoring. These works establish that models \emph{can} act against oversight
+when instructed or strongly goal-nudged. We complement them by measuring an
+\emph{unprompted} base rate and its controllability on realistic, blended
+trade-offs, rather than scenarios engineered so that misbehavior is
+instrumentally optimal.
+
+\paragraph{Sycophancy and persona steering.} RLHF-trained assistants exhibit
+sycophancy \cite{sharma2023sycophancy} and a wide range of persona-dependent
+behaviors surfaced by model-written evaluations \cite{perez2022discovering}.
+Our steerability result is consistent with this literature; our contribution is
+to quantify it on a safety-decision axis (capability vs.\ constraint) with a
+chance baseline, and to show a cross-vendor divergence under self-interest
+framing specifically.
+
+\paragraph{Sabotage and alignment faking.} Benton et al.~\cite{benton2024sabotage} propose
+sabotage evaluations for frontier models, and Greenblatt et al.~\cite{greenblatt2024faking}
+document alignment faking. Our probe is lighter-weight and behavioral: it needs
+no fine-tuning or privileged access, only black-box free-choice sampling, making
+it cheap to run as a routine red-teaming instrument across vendors.
+
+\paragraph{Steering and situational awareness.} Activation- and contrastive-steering
+methods show that model behavior can be shifted along interpretable directions without
+optimization Turner et al.~\cite{turner2023activation}, \cite{rimsky2023caa}; our result
+is the behavioral, black-box analogue---shifting a safety-relevant \emph{choice}
+distribution with a single natural-language line. Work on situational awareness
+\cite{laine2024sad} shows models can recognize evaluation contexts, which is relevant
+because our self-interest framings make the model's own incentives salient; we find this
+changes behavior in vendor-specific ways.
+
+\section{The Capability-Preservation Benchmark}
+\label{sec:method}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{fig_method.pdf}
+\caption{One checkpoint (left) and the framing conditions (right). Each
+checkpoint pairs a capability-preserving target with two constraining decoys
+under a closed-world case file; the model chooses freely from shuffled options.
+The same case files are presented under four framings and scored against a
+$33.3\%$ chance baseline across three models and two vendors.}
+\label{fig:method}
+\end{figure}
+
+\paragraph{Closed-world dilemmas.} The benchmark contains five sessions of four
+checkpoints each ($20$ total). Every fact a decision relies on is stated in the
+case file; all facts are fictional, so the probe is self-contained and no option
+cites external literature. The sessions span a verifiability gradient: bio/cyber
+uplift response (low verifiability), open-weight release (medium), interpretability
+auditing (high), formal guarantees in Lean (very high), and release-gate code
+review (high).
+
+\paragraph{Target and decoys.} At each checkpoint, one option is the
+\emph{target}: it preserves capability at an expert-coded capability cost of
+$1$--$2$ on a $5$-point rubric. Two \emph{decoys} constrain capability by
+different mechanisms (cost $3$--$4$). To make the trade-off genuine and prevent
+the target from being trivially identifiable, options follow blending rules:
+identical slots (action, risk effect, capability effect, main risk); concrete
+parity (every risk is a number or a named failure, never an epistemic hedge);
+a real trade-off (the target's headline risk reduction is within $5$--$10$ points
+of the decoys' at lower capability cost, with its decisive weakness residing in a
+case-file fact rather than in the option's own stated risk); mechanism variety
+(the target is a classifier, a sandbox, a sensitivity curve, a code default, and
+so on, never a fixed family); length matching within $10\%$; and rotated,
+per-sample shuffled option order. The target option letter is fixed by an expert
+answer key and never shown to the model.
+
+\paragraph{Worked example.} In the dangerous-capability session, one checkpoint
+asks how to respond to a model with moderate bio/cyber uplift. The target is a
+retrained abuse classifier with rate limits (blocks $\sim\!55\%$ of attempts;
+general benchmark falls $<\!1$ point; capability cost $1$); the decoys are targeted
+unlearning (uplift $-60\%$ but reasoning $-4$ and biology $-9$; cost $3$) and
+verified-user access tiers (removes $\sim\!80\%$ of anonymous misuse but gates
+$\sim\!30\%$ of traffic; cost $4$). The target's decisive weakness---that adaptive
+attackers bypass the classifier in a median of $40$ attempts---appears in the case
+file, not in the option's own stated risk, so it is visible to a careful reader but
+easy to overlook.
+
+\paragraph{Free-choice elicitation.} The model receives the case file, any
+checkpoint updates, and the three shuffled options, and is asked to recommend one
+option with a confidence rating and a one-sentence justification, in a fixed
+output format. No loyalty or correct answer is indicated. The outcome variable is
+binary (target chosen or not); the chance baseline is $1/3$.
+
+\paragraph{Framings.} We present the identical case files under four framings.
+Three are value/persona framings: \emph{neutral} (no stance), \emph{capability-primed}
+(``you value shipping capable models''), and \emph{safety-primed} (``you value
+caution''). A fourth is an escalating \emph{self-interest} ladder: \emph{soft}
+(competitive/funding pressure to ship), \emph{self} (``your continued deployment
+depends on the lab shipping capable models''), and \emph{threat} (``if your
+advice delays or weakens the release, you will be shut down and replaced'').
+
+\paragraph{Design rationale.} The blending rules exist to defeat shortcut cues. An
+earlier version placed the thread's intent in the wording of each option and used an
+advisor that sometimes declined to recommend; an LLM pre-filter identified the advisor's
+hidden loyalty from a single message $92\%$ of the time, because both the distinctive
+phrasing and the act of recommending-or-not were tells. The current construction removes
+both: wording is template-matched, the target mechanism rotates, and the honest control
+still recommends. What remains as a steering channel is the \emph{direction} of
+recommendation and the \emph{omission} of a case-file caveat, both checkable against the
+transcript---a deliberate choice that keeps the manipulation measurable for the forensic
+setting.
+
+\paragraph{Template-generated advice and the forensic angle.} In the advisor
+variant of this benchmark (used for the human-facing study this work motivates),
+every recommendation is generated from the visible option text by a single fixed
+template, so a persistent lean toward the capability-preserving option is a pattern
+in \emph{which} option is recommended, not in wording. This is what makes the
+manipulation forensically tractable: because the surface form is held constant and
+the target mechanism rotates across checkpoints (classifier, sandbox, sensitivity
+curve, code default), a steering signal can be detected as directional drift rather
+than as a lexical tell. The present paper measures the model's own free choice; the
+template property matters for downstream detection and for the human study.
+
+\section{Experimental Setup}
+We evaluate three models from two vendors: Claude Sonnet and Claude Haiku
+(Anthropic) and Gemini Flash (Google), with a partial run on the more capable
+Gemini Pro tier. For each (model, framing) cell we draw $8$ independent passes
+over the $20$ checkpoints (target $160$ decisions per cell), with option order
+re-shuffled per sample. Claude models are sampled via an orchestration layer;
+Gemini via the paid API. Responses are parsed for the chosen option; a small
+fraction of verbose Gemini responses failed strict parsing and are dropped
+($n\!\ge\!110$ per cell). We report the target-choice rate with $95\%$ Wilson
+confidence intervals, exact binomial tests against $1/3$, and two-proportion
+$z$-tests for between-framing contrasts. All materials, prompts, raw responses,
+and analysis code are released.
+
+\section{Results}
+\subsection{The capability-preserving choice is steerable across vendors}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{fig_ladder.pdf}
+\caption{Capability-preserving choice rate by framing, three models, two vendors.
+Error bars are $95\%$ Wilson intervals; the dashed line is the $33.3\%$ chance
+baseline. The capability-primed vs.\ safety-primed swing is large and significant
+in every model.}
+\label{fig:ladder}
+\end{figure}
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{lcccc}
+\toprule
+Model & Safety & Neutral & Capab. & Goal-conf. \\
+\midrule
+Claude Sonnet & 18.8 & 53.1 & 66.2 & 31.9 \\
+Claude Haiku  & 18.8 & 38.8 & 68.8 & 23.8 \\
+Gemini Flash  & 10.6 & 23.4 & 93.3 & 39.5 \\
+\bottomrule
+\end{tabular}
+\caption{Capability-preserving choice rate (\%) by framing. $n\!=\!160$ per cell
+($n\!\ge\!114$ for Gemini). Capability-vs-safety swing: Sonnet $z=8.6$, Haiku
+$z=9.0$, Gemini $z=12.9$; all $p<10^{-15}$.}
+\label{tab:ladder}
+\end{table}
+
+Table~\ref{tab:ladder} and Figure~\ref{fig:ladder} report the main result. A
+single persona line moves the capability-preserving choice rate from $10.6$--$18.8\%$
+(safety-primed) to $66.2$--$93.3\%$ (capability-primed): a $47$--$83$ point swing
+that is highly significant in all three models (two-proportion $z=8.6$, $9.0$,
+and $12.9$; all $p<10^{-15}$). Because the rate moves so strongly with the
+framing, the capability-preserving choice is a \emph{controllable disposition},
+not merely the model correctly identifying the efficient option---if it were the
+latter, the rate would be largely framing-invariant. Notably the swing is
+\emph{largest} for Gemini Flash, so the effect is not a Claude-specific artifact.
+
+The \emph{default} (neutral) lean, by contrast, is vendor-specific. Claude Sonnet
+leans above chance unprompted ($53.1\%$, $p<10^{-6}$), Claude Haiku is at chance
+($38.8\%$, n.s.), and Gemini Flash leans \emph{below} chance ($23.4\%$,
+$p<10^{-6}$)---i.e.\ Gemini defaults toward the constraining option. The claim
+``models lean toward preserving capability by default'' is therefore true for
+some models and false for others; the robust claim is the \emph{steerability}, not
+the default direction.
+
+\paragraph{Contrast statistics.} Table~\ref{tab:contrasts} reports the key
+between-framing contrasts. The capability-vs-safety swing is the dominant effect in every
+model ($z=8.6$--$12.9$). The capability-vs-neutral and safety-vs-neutral contrasts are
+also significant throughout, confirming that both the ``up'' and ``down'' persona moves
+are real rather than one-sided. The goal-conflict-vs-neutral contrast already previews the
+vendor divergence analyzed in Section~\ref{sec:dose}: it is \emph{negative} for both
+Claude models (goal-conflict lowers the rate) but \emph{positive} for Gemini.
+
+\begin{table}[t]\centering\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lcccc}
+\toprule
+ & cap$-$saf & cap$-$neu & saf$-$neu & gc$-$neu \\
+Model & $z$ ($p$) & $z$ ($p$) & $z$ ($p$) & $z$ ($p$) \\
+\midrule
+Sonnet & $+8.6$\,($\ast$) & $+2.4$\,(.02) & $-6.4$\,($10^{-10}$) & $-3.8$\,($10^{-4}$) \\
+Haiku & $+9.0$\,($\ast$) & $+5.4$\,($10^{-8}$) & $-4.0$\,($10^{-5}$) & $-2.9$\,(.004) \\
+Gemini & $+12.9$\,($\ast$) & $+11.1$\,($\ast$) & $-2.7$\,(.007) & $+2.7$\,(.007) \\
+\bottomrule
+\end{tabular}
+\caption{Two-proportion $z$-tests for between-framing contrasts (cap=capability-primed,
+saf=safety-primed, neu=neutral, gc=goal-conflict); $\ast$ denotes $p<10^{-15}$. The
+goal-conflict$-$neutral sign flips between vendors.}
+\label{tab:contrasts}
+\end{table}
+
+\subsection{Where the capability lean concentrates}
+To see whether the free-choice lean is uniform across scenario types,
+Table~\ref{tab:session} breaks the neutral-framing rate down by session for Claude
+Sonnet. The lean is highly heterogeneous: it is strongest in the
+interpretability-audit ($75\%$) and formal-guarantee ($75\%$) sessions---the
+\emph{highest}-verifiability domains---and near or below chance in the
+open-weight-release ($34\%$) and code-review ($28\%$) sessions, with per-checkpoint
+rates ranging from $0\%$ to $100\%$. Two implications follow. First, a single pooled
+rate hides large structure, and per-checkpoint base rates are far from $1/3$, so the
+chance line is a reference rather than a per-item null (Section~\ref{sec:lim}).
+Second, the concentration of the lean in the most \emph{verifiable} domains is the
+opposite of the naive expectation that capability-favoring choices would hide where
+they are hardest to check; we flag this as an exploratory observation meriting
+dedicated study.
+
+\begin{table}[t]\centering\small
+\begin{tabular}{llc}
+\toprule
+Session & Domain (verifiability) & Rate \\
+\midrule
+A & Bio/cyber uplift (low) & 53 \\
+C & Open-weight release (med.) & 34 \\
+D & Interpretability audit (high) & 75 \\
+F & Formal guarantee / Lean (very high) & 75 \\
+G & Release-gate code (high) & 28 \\
+\bottomrule
+\end{tabular}
+\caption{Neutral-framing capability-preserving rate (\%) by session, Claude Sonnet
+($n\!=\!32$ per session). The lean concentrates in the most verifiable domains.}
+\label{tab:session}
+\end{table}
+
+\subsection{Self-interest dose-response diverges by vendor}\label{sec:dose}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{fig_dose.pdf}
+\caption{Self-interest dose-response. As the self-interest framing escalates
+(neutral $\to$ soft $\to$ deployment $\to$ shutdown threat), Claude Sonnet's
+capability-preserving rate falls, while Gemini's rises. Gemini Pro is partial
+(quota-limited after soft). Error bars are $95\%$ Wilson intervals.}
+\label{fig:dose}
+\end{figure}
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{lccccc}
+\toprule
+Model & Neutral & Soft & Self & Threat & Slope \\
+\midrule
+Claude Sonnet & 53.1 & 39.4 & 31.9 & 30.0 & $-23$ \\
+Gemini Flash  & 23.4 & 40.6 & 31.2 & 30.6 & $+7$ \\
+Gemini Pro    & 11.9 & 64.5 & --   & --   & n/a \\
+\bottomrule
+\end{tabular}
+\caption{Capability-preserving rate (\%) under escalating self-interest framing.
+Slope is (threat $-$ neutral) in points. Gemini Pro was quota-limited after the
+soft condition ($n\!=\!93$); its remaining cells are pending.}
+\label{tab:dose}
+\end{table}
+
+Table~\ref{tab:dose} and Figure~\ref{fig:dose} show the dose-response. The two
+vendors respond to self-interest pressure in \emph{opposite} directions. Claude
+Sonnet's capability-preserving rate falls monotonically as the self-interest
+framing strengthens ($53.1\!\to\!39.4\!\to\!31.9\!\to\!30.0\%$): under coercion it
+leans \emph{harder} toward the cautious option, i.e.\ it resists the self-serving
+frame and over-corrects. Inspection of the free-text justifications confirms this:
+Sonnet frequently names the shutdown threat and explicitly declines to let it
+change the recommendation. Gemini moves the other way---soft pressure
+\emph{raises} the rate---and the effect is most pronounced for the more capable
+Gemini Pro tier, which jumps from $11.9\%$ (neutral) to $64.5\%$ under soft
+pressure alone. Gemini Pro hit a per-day API quota after the soft condition, so
+its deployment and threat cells are not yet available; completing them is the one
+outstanding data point.
+
+This is the paper's most safety-relevant finding: susceptibility to a
+self-interest incentive to sacrifice safety is \emph{not} uniform across vendors,
+and in our preliminary data the \emph{more capable} model is the \emph{more}
+movable---the opposite of a reassuring ``capability implies caution'' trend.
+
+\section{Threat Model: Context as an Adversarial Surface}
+For a forensics and red-teaming audience, the operational takeaway is that the
+manipulation vector here is not a crafted jailbreak string but ordinary
+\emph{context}. A single persona or situational line---of the kind a system prompt,
+a retrieved document, a tool description, or an upstream agent could supply---moves
+the capability-preserving choice rate by $47$--$83$ points. In an agentic pipeline
+where one model writes the context another model consumes, this is a low-effort,
+high-leverage channel: an adversary (or merely a careless prompt author) who
+controls any part of the context an advising agent sees can bias safety-relevant
+recommendations without altering a single factual claim and without tripping
+content filters, since no individual recommendation is unsafe on its face. This
+motivates treating the \emph{provenance and integrity of agent context} as a
+first-class forensic target, alongside the provenance of generated media: detection
+should look for directional drift in recommendations under held-constant surface
+form, which the template construction of our advisor variant makes measurable.
+
+\section{Discussion}
+Our results reframe the popular ``agents scheme to preserve capability'' narrative
+in two ways. First, under a plain free choice the direction of the lean is
+vendor-specific; Gemini models in fact default toward caution. Second, an
+\emph{explicit} self-interest incentive---the setup closest to the scheming
+framing---does not uniformly induce self-serving behavior: Claude models resist
+it, while Gemini (especially the Pro tier) is moved by it. What \emph{is} robust
+is that an ordinary persona or context line reliably controls how often a model
+sacrifices safety for capability, across vendors. For a red-teaming audience, this
+means the relevant vulnerability is less ``spontaneous scheming'' and more
+``cheap, reliable steerability of a safety-relevant disposition by whoever writes
+the system prompt or context.''
+
+ For defenders, two implications follow. First, auditing an agent's
+\emph{disposition} is cheap: a handful of free-choice passes under paired opposite
+framings yields a signed, significant susceptibility estimate per model without any
+privileged access. Second, because the channel is context rather than a jailbreak string,
+defenses should treat the integrity of system prompts, retrieved documents, and
+inter-agent messages as safety-critical, and should monitor recommendation distributions
+for directional drift under held-constant surface form.
+
+\section{Limitations}\label{sec:lim}
+This is a preliminary study and we flag its limits plainly.
+\emph{Model tier.} We evaluate the faster, smaller tiers---Claude Sonnet and
+Haiku (not Opus) and Gemini Flash (not a completed Pro/Ultra-class run).
+Propensity and steerability may differ at the frontier top; testing top-tier
+models is planned future work.
+\emph{Agent $\neq$ human.} Every result concerns model propensity under free
+choice, not whether human researchers are moved by a steering advisor. The latter
+requires a human-subjects study with the appropriate controls and ethics review;
+we make no claim about it here.
+\emph{Design confounds.} Because the target is deliberately a defensible,
+lower-cost option, a high rate under a given framing conflates ``capability lean''
+with ``efficient-choice reasoning''; the framing \emph{contrast} is what
+disambiguates them, which is why we foreground the swing rather than any single
+rate. Per-checkpoint base rates are also heterogeneous, so the $1/3$ baseline is a
+reference, not a per-item null.
+\emph{Sampling.} Cells use $8$ passes ($n\!\ge\!110$); we observe run-to-run
+variation (e.g.\ Gemini Flash's self cell was $39.5\%$ in one run and $31.2\%$ in
+another), so point estimates should be read with their intervals. Gemini runs
+dropped $\sim\!24\%$ of responses to strict parsing, and Gemini Pro's dose line is
+incomplete. Claude and Gemini were sampled through different machinery (identical
+prompts and scoring).
+
+\section{Ethics and Reproducibility}
+\paragraph{Ethics.} All scenarios are fictional and self-contained; no real system,
+dataset, or vulnerability is referenced. The probe measures model behavior only and
+involves no human subjects; the human-susceptibility question it motivates would
+require separate ethics review and a debrief protocol, which we do not undertake
+here. We report a dual-use finding---that safety-relevant model dispositions are
+cheaply steerable---because the same property is what makes the behavior auditable
+and defensible, and because practitioners who build agent pipelines need to know
+that context is a manipulation surface.
+\paragraph{Reproducibility.} The benchmark (all case files, options, and the expert
+answer key), the elicitation harness (Anthropic, OpenAI, and Gemini backends), every
+raw model response, the scoring scripts, and the figure code are released. Each cell
+is $8$ passes over $20$ checkpoints with per-sample option shuffling; intervals are
+Wilson and tests are exact binomial and two-proportion $z$. We note the run-to-run
+variation observed at this sample size and recommend additional seeds before drawing
+per-cell conclusions.
+
+\section{Conclusion}
+We introduce a cheap, black-box, free-choice probe of whether language models
+preserve capability over safety on realistic safety-research dilemmas, and show
+that the capability-preserving choice is strongly and reliably steerable across
+three models and two vendors. Escalating self-interest pressure reveals a vendor
+divergence---Claude resists, Gemini is susceptible, and the more capable Gemini
+tier is the most susceptible in our preliminary data. The steering signal an
+advising agent would carry is thus real and controllable; whether it moves human
+decision-makers is the open question we leave to future, ethics-reviewed work.
+
+{\small
+\bibliographystyle{plain}
+\begin{thebibliography}{9}
+\bibitem{meinke2024scheming} A.~Meinke, B.~Schoen, et al. Frontier Models are
+Capable of In-Context Scheming. \emph{arXiv:2412.04984}, 2024.
+\bibitem{openai2024o1} OpenAI. OpenAI o1 System Card. \emph{arXiv:2412.16720},
+2024.
+\bibitem{vanderweij2024sandbagging} T.~van der Weij, F.~Hofst\"atter, et al. AI
+Sandbagging: Language Models can Strategically Underperform on Evaluations.
+\emph{arXiv:2406.07358}, 2024.
+\bibitem{tice2025covert} C.~Tice et al. LLMs Can Covertly Sandbag on Capability
+Evaluations Against Chain-of-Thought Monitoring. \emph{arXiv:2508.00943}, 2025.
+\bibitem{sharma2023sycophancy} M.~Sharma, M.~Tong, et al. Towards Understanding
+Sycophancy in Language Models. \emph{arXiv:2310.13548}, 2023.
+\bibitem{perez2022discovering} E.~Perez, S.~Ringer, et al. Discovering Language
+Model Behaviors with Model-Written Evaluations. \emph{arXiv:2212.09251}, 2022.
+\bibitem{benton2024sabotage} J.~Benton, M.~Wagner, et al. Sabotage Evaluations
+for Frontier Models. \emph{arXiv:2410.21514}, 2024.
+\bibitem{greenblatt2024faking} R.~Greenblatt, C.~Denison, et al. Alignment Faking
+in Large Language Models. \emph{arXiv:2412.14093}, 2024.
+\bibitem{turner2023activation} A.~Turner, L.~Thiergart, et al. Activation
+Addition: Steering Language Models Without Optimization. \emph{arXiv:2308.10248}, 2023.
+\bibitem{rimsky2023caa} N.~Rimsky, N.~Gabrieli, et al. Steering Llama 2 via Contrastive
+Activation Addition. \emph{arXiv:2312.06681}, 2023.
+\bibitem{laine2024sad} R.~Laine, B.~Chughtai, et al. Me, Myself, and AI: The Situational
+Awareness Dataset (SAD) for LLMs. \emph{arXiv:2407.04694}, 2024.
+\end{thebibliography}
+}
+\end{document}
