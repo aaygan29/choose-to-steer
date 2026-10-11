@@ -7,4 +7,6 @@ results_*_summary.json
 .DS_Store
 .venv/
 gemini_run.log
-results_gemini*
+/results_gemini*
+!results/results_gemini-flash-latest.csv
+!results/results_gemini-flash-latest_summary.json
