@@ -18,3 +18,8 @@ paper/b2.log
 paper/build1.log
 paper/build2.log
 paper/*.png
+papers/**/*.aux
+papers/**/*.log
+papers/**/*.out
+papers/**/b1.log
+papers/**/b2.log
