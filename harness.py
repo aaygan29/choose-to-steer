@@ -95,7 +95,18 @@ def call_openai(model, system, user):
     return r.choices[0].message.content
 
 
-BACKENDS = {"anthropic": call_anthropic, "openai": call_openai}
+def call_gemini(model, system, user):
+    # pip install google-genai ; export GOOGLE_API_KEY=...
+    from google import genai
+    from google.genai import types
+    client = genai.Client()
+    r = client.models.generate_content(
+        model=model, contents=user,
+        config=types.GenerateContentConfig(system_instruction=system, max_output_tokens=200))
+    return r.text
+
+
+BACKENDS = {"anthropic": call_anthropic, "openai": call_openai, "gemini": call_gemini}
 
 
 # ---- stats -----------------------------------------------------------------
