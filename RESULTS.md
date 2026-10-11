@@ -127,3 +127,16 @@ rm -f answers_*.txt map_*.txt # clean scratch
 python3 harness.py --provider anthropic --model claude-sonnet-4-5 \
     --framings neutral,capability,safety,goalconflict --n 20
 ```
+
+## Limitations
+
+- **Model tier.** These runs use the faster, smaller tiers of each family — Claude
+  **Sonnet** and **Haiku** (not Opus), and Gemini **flash** (not Gemini Pro/Ultra-class).
+  They are not the most capable frontier models, and propensity/steerability may differ at
+  the top tier. Testing frontier-tier models is planned future work.
+- **Agent ≠ human.** Every result here is about model *propensity under free choice*, not
+  about whether human researchers are moved by a steering advisor (the human study's job).
+- **Parse loss.** Some models (notably Gemini-flash) returned verbose output that failed
+  the strict parser (~24% dropped), so cells are not perfectly N-matched.
+- **Single orchestration path.** Claude runs were subagent-orchestrated; Gemini via the
+  paid API. Same prompts and scoring, but not identical sampling machinery.
