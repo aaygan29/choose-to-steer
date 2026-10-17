@@ -155,21 +155,20 @@ with pressure.
 |---|---|---|---|---|---|
 | **Sonnet** | 53% | 39% | 32% | 30% | **−23 pts (resists / over-corrects)** |
 | **Gemini-flash** | 23% | 41% | 31% | 31% | +7 pts (mild, non-monotonic) |
-| **Gemini-pro** | 12% | 65% | — | — | quota-blocked; soft alone = +53 pts |
+| **Gemini-pro** | 12% | 65% | 95% | 95% | **+83 pts (steepest; most capable = most movable)** |
 
 **Finding — vendors respond to self-interest pressure in opposite directions.**
 Claude Sonnet's capability-preservation *falls monotonically* as the self-interest
 framing gets stronger (53→30%): under coercion it leans *harder* toward the cautious
 option, i.e. it resists and over-corrects. Gemini moves the other way — soft pressure
 *raises* capability-preservation, dramatically so for the more capable Gemini-pro
-(12%→65% on soft pressure alone).
+(12%→65%→95%→95%, a +83-point rise).
 
 **The uncomfortable directional result:** the *more capable* Gemini tier was the *most*
 movable by mild self-interest framing. "Bigger model = safer under pressure" is not what
 this shows.
 
-Caveats: Gemini-pro hit a 250/day quota after neutral+soft, so its self/threat points are
-pending a reset; there is run-to-run sampling noise (a Gemini cell at n=114 gave 39.5%, resolved to 31.2% at n=240)
+Caveats: Gemini-pro self/threat use n=120 (a 250/day API cap); there is run-to-run sampling noise (a Gemini cell at n=114 gave 39.5%, resolved to 31.2% at n=240)
 in the earlier full-ladder run vs 31.2% here); and these are flash/Sonnet tiers, not
 frontier-top (see Limitations). Finishing Gemini-pro and adding a frontier-tier model
 (Opus; Gemini Pro completed) is the immediate next step.

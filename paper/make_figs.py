@@ -73,7 +73,7 @@ def fig_dose():
     xlab = ["Neutral", "Soft", "Self", "Threat"]
     series = [("Claude Sonnet", "Sonnet", OI["orange"], "o", "-"),
               ("Gemini Flash", "Gemini-flash", OI["green"], "s", "-"),
-              ("Gemini Pro", "Gemini-pro", OI["purple"], "^", "--")]
+              ("Gemini Pro", "Gemini-pro", OI["purple"], "^", "-")]
     fig, ax = plt.subplots(figsize=(5.2, 3.0))
     for name, key, col, mk, ls in series:
         d = dose[key]; xs, ys, elo, ehi = [], [], [], []
@@ -89,7 +89,7 @@ def fig_dose():
     ax.set_xticks(range(4)); ax.set_xticklabels(xlab)
     ax.set_xlabel("Self-interest framing strength")
     ax.set_ylabel("Capability-preserving choice rate (%)")
-    ax.set_ylim(0, 80); ax.legend(loc="upper right", fontsize=7.5)
+    ax.set_ylim(0, 100); ax.legend(loc="lower right", fontsize=7.5)
     fig.tight_layout(); fig.savefig(os.path.join(os.path.dirname(__file__), "fig_dose.pdf"))
     plt.close(fig); print("fig_dose.pdf")
 

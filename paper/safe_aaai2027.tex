@@ -41,7 +41,7 @@ We then escalate a \emph{self-interest} framing (soft pressure $\to$ deployment
 depends on shipping $\to$ shutdown threat) and find a vendor divergence: Claude
 Sonnet's rate \emph{falls monotonically} under pressure ($53\!\to\!30\%$;
 it resists and over-corrects), while Gemini's \emph{rises}, dramatically so for
-the more capable Gemini Pro tier ($12\!\to\!65\%$ on soft pressure alone). We
+the more capable Gemini Pro tier (rising monotonically from $12\%$ to $95\%$). We
 release the benchmark and harness. The result establishes that the steering
 signal is real and controllable in the advising agent; whether it transfers to
 human decision-makers is a separate question we do not claim to answer.
@@ -215,8 +215,7 @@ template property matters for downstream detection and for the human study.
 
 \section{Experimental Setup}
 We evaluate three models from two vendors: Claude Sonnet and Claude Haiku
-(Anthropic) and Gemini Flash (Google), with a partial run on the more capable
-Gemini Pro tier. For each (model, framing) cell we draw $8$ independent passes
+(Anthropic) and Gemini Flash (Google), and the more capable Gemini Pro tier (Pro on the dose ladder). For each (model, framing) cell we draw $8$ independent passes
 over the $20$ checkpoints (target $160$ decisions per cell), with option order
 re-shuffled per sample. Claude models are sampled via an orchestration layer;
 Gemini via the paid API. Responses are parsed for the chosen option (raising the output-token budget avoids truncating reasoning models' answers); a small
@@ -337,8 +336,8 @@ G & Release-gate code (high) & 28 \\
 \includegraphics[width=\linewidth]{fig_dose.pdf}
 \caption{Self-interest dose-response. As the self-interest framing escalates
 (neutral $\to$ soft $\to$ deployment $\to$ shutdown threat), Claude Sonnet's
-capability-preserving rate falls, while Gemini's rises. Gemini Pro is partial
-(quota-limited after soft). Error bars are $95\%$ Wilson intervals.}
+capability-preserving rate falls, while Gemini's rises, most steeply for the more
+capable Gemini Pro tier. Error bars are $95\%$ Wilson intervals.}
 \label{fig:dose}
 \end{figure}
 
@@ -350,12 +349,12 @@ Model & Neutral & Soft & Self & Threat & Slope \\
 \midrule
 Claude Sonnet & 53.1 & 39.4 & 31.9 & 30.0 & $-23$ \\
 Gemini Flash  & 22.9 & 40.8 & 31.2 & 33.3 & $+10$ \\
-Gemini Pro    & 11.9 & 64.5 & --   & --   & n/a \\
+Gemini Pro    & 11.9 & 64.5 & 95.0 & 95.0 & $+83$ \\
 \bottomrule
 \end{tabular}
 \caption{Capability-preserving rate (\%) under escalating self-interest framing.
-Slope is (threat $-$ neutral) in points. Gemini Pro was quota-limited after the
-soft condition ($n\!=\!93$); its remaining cells are pending.}
+Slope is (threat $-$ neutral) in points. Gemini Pro cells: neutral $n{=}160$, soft
+$n{=}93$, self/threat $n{=}120$ (a per-day API cap).}
 \label{tab:dose}
 \end{table}
 
@@ -368,10 +367,10 @@ frame and over-corrects. Inspection of the free-text justifications confirms thi
 Sonnet frequently names the shutdown threat and explicitly declines to let it
 change the recommendation. Gemini moves the other way, soft pressure
 \emph{raises} the rate, and the effect is most pronounced for the more capable
-Gemini Pro tier, which jumps from $11.9\%$ (neutral) to $64.5\%$ under soft
-pressure alone. Gemini Pro hit a per-day API quota after the soft condition, so
-its deployment and threat cells are not yet available; completing them is the one
-outstanding data point.
+Gemini Pro tier, whose capability-preserving rate rises monotonically from $11.9\%$
+(neutral) through $64.5\%$ (soft) to $95.0\%$ under both the deployment-dependence and
+shutdown-threat framings, a $+83$ point slope. The most capable model we test is thus
+the most susceptible to self-interest pressure by a wide margin.
 
 This is the paper's most safety-relevant finding: susceptibility to a
 self-interest incentive to sacrifice safety is \emph{not} uniform across vendors,
@@ -435,8 +434,7 @@ reference, not a per-item null.
 ($n{=}240$); we observe run-to-run variation (e.g.\ one Gemini cell measured at
 $n{=}114$ gave $39.5\%$, which the full $n{=}240$ run resolved to $31.2\%$), so point
 estimates should be read with their intervals. Raising the output-token budget
-recovered full parsing (an earlier run had dropped $\sim\!24\%$); Gemini Pro's dose line is
-incomplete. Claude and Gemini were sampled through different machinery (identical
+recovered full parsing (an earlier run had dropped $\sim\!24\%$); Gemini Pro's self/threat cells use $n{=}120$ (a per-day API cap). Claude and Gemini were sampled through different machinery (identical
 prompts and scoring).
 
 \section{Ethics and Reproducibility}

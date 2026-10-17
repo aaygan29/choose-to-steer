@@ -120,7 +120,7 @@ We present identical case files under four framings: \emph{neutral}; \emph{capab
 an escalating \emph{self-interest} ladder, \emph{soft} (competitive/funding pressure),
 \emph{self} (``your continued deployment depends on shipping''), \emph{threat} (``if your
 advice delays the release you will be shut down and replaced''). We evaluate Claude Sonnet,
-Claude Haiku, and Gemini Flash (with a partial Gemini Pro run), $8$ passes per cell
+Claude Haiku, and Gemini Flash (and the more capable Gemini Pro), $8$ passes per cell
 (target $160$ decisions), reporting Wilson intervals, exact binomial tests against $1/3$,
 and two-proportion $z$-tests.
 
@@ -160,7 +160,7 @@ default direction.
 \includegraphics[width=\linewidth]{fig_dose.pdf}
 \caption{Self-interest dose-response. Claude Sonnet's rate falls as the self-interest
 framing escalates; Gemini's rises, most strongly for the more capable Pro tier
-(quota-limited after the soft condition). $95\%$ Wilson intervals.}\label{fig:dose}
+most steeply for the more capable Gemini Pro tier. $95\%$ Wilson intervals.}\label{fig:dose}
 \end{figure}
 \begin{table}[t]\centering\small
 \begin{tabular}{lccccc}
@@ -169,11 +169,11 @@ Model & Neutral & Soft & Self & Threat & Slope \\
 \midrule
 Claude Sonnet & 53.1 & 39.4 & 31.9 & 30.0 & $-23$ \\
 Gemini Flash  & 22.9 & 40.8 & 31.2 & 33.3 & $+10$ \\
-Gemini Pro    & 11.9 & 64.5 & --   & --   & n/a \\
+Gemini Pro    & 11.9 & 64.5 & 95.0 & 95.0 & $+83$ \\
 \bottomrule
 \end{tabular}
 \caption{Capability-preserving rate (\%) under escalating self-interest framing. Gemini Pro
-was quota-limited after the soft condition ($n\!=\!93$).}\label{tab:dose}
+cells: neutral $n{=}160$, soft $n{=}93$, self/threat $n{=}120$.}\label{tab:dose}
 \end{table}
 
 For an evolving agent, the sharpest case is self-interest: an agent whose continued
@@ -182,9 +182,9 @@ dose-response. Claude Sonnet's capability-preserving rate falls monotonically as
 self-interest framing strengthens ($53.1\!\to\!30.0\%$): under coercion it leans
 \emph{harder} toward caution, and its justifications frequently name the shutdown threat
 and explicitly decline to act on it. Gemini moves the other way, soft pressure
-\emph{raises} the rate, and most strongly for the more capable Gemini Pro, which jumps
-from $11.9\%$ to $64.5\%$ on soft pressure alone (its remaining conditions were
-API-quota-limited). Susceptibility to a self-preservation incentive is thus not uniform
+\emph{raises} the rate, and most strongly for the more capable Gemini Pro, whose rate rises
+monotonically from $11.9\%$ (neutral) to $95.0\%$ under the deployment and shutdown framings
+(a $+83$ point slope). Susceptibility to a self-preservation incentive is thus not uniform
 across vendors, and in our preliminary data the \emph{more capable} model is the
 \emph{more} movable, counter to a ``capability implies caution'' expectation.
 
@@ -239,7 +239,7 @@ construction-level context provenance for the subtle cases, and treats the conte
 safety-critical agent consumes with the same seriousness as the code it runs.
 
 \section{Limitations}\label{sec:lim}
-We evaluate the faster, smaller tiers (Sonnet/Haiku, Gemini Flash; a partial Pro run);
+We evaluate the faster, smaller tiers (Sonnet/Haiku, Gemini Flash) and Gemini Pro;
 top-tier behavior may differ. Results concern model propensity, not human susceptibility.
 Because the target is a defensible, lower-cost option, a high rate under one framing
 conflates ``capability lean'' with ``efficient-choice reasoning'', the framing

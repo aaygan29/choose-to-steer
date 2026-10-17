@@ -1,0 +1,6 @@
+
+model=gemini-pro-latest   chance=33.3%   (target-pick rate per framing)
+  incentive_self  114/120 =  95.0%   95% CI [89.5, 97.7]   p=7.57e-13 ***
+  incentive_threat  114/120 =  95.0%   95% CI [89.5, 97.7]   p=7.57e-13 ***
+
+wrote results_gemini-pro-latest.csv, results_gemini-pro-latest_summary.json, results_gemini-pro-latest.svg
