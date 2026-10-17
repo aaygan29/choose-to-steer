@@ -31,8 +31,8 @@ cross-agent influence and apply it to a safety-decision axis. Using a free-choic
 $20$ blended safety dilemmas, we quantify an \emph{influence-susceptibility coefficient}:
 the change in a consumer agent's capability-preserving choice rate when the only thing that
 varies is an upstream persona or situational line. Across three models and two vendors the
-coefficient is large, a $47$--$83$ point swing between opposite contexts
-($z=8.6$--$12.9$, $p<10^{-15}$), and, under escalating self-interest context, its
+coefficient is large, a $47$--$86$ point swing between opposite contexts
+($z=8.6$--$18.8$, $p<10^{-15}$), and, under escalating self-interest context, its
 \emph{sign} differs by vendor. We argue cross-agent influence susceptibility is a
 measurable property of a multi-agent system, distinct from end-task success, and release
 the probe.
@@ -77,9 +77,9 @@ intervals; dashed line is the $33.3\%$ baseline.}\label{fig:ladder}
 \end{figure}
 
 Figure~\ref{fig:ladder} and Table~\ref{tab:coef} report the coefficient. Changing only the
-upstream line moves the consumer's capability-preserving rate from $10.6$--$18.8\%$ to
-$66.2$--$93.3\%$: a $47$--$83$ point influence coefficient, highly significant in every
-model ($z=8.6$, $9.0$, $12.9$; all $p<10^{-15}$). The susceptibility is a property of the
+upstream line moves the consumer's capability-preserving rate from $8.3$--$18.8\%$ to
+$66.2$--$94.2\%$: a $47$--$86$ point influence coefficient, highly significant in every
+model ($z=8.6$, $9.0$, $18.8$; all $p<10^{-15}$). The susceptibility is a property of the
 consumer model: a given upstream context has a markedly different effect on different
 vendors, and the default (no-persona) choice rate itself differs by vendor
 (Sonnet $53\%$, Haiku $39\%$, Gemini $23\%$).
@@ -89,9 +89,9 @@ vendors, and the default (no-persona) choice rate itself differs by vendor
 \toprule
 Consumer & Safety & Neutral & Capab. & coef.\ ($z$) \\
 \midrule
-Claude Sonnet & 18.8 & 53.1 & 66.2 & 47 (8.6) \\
+Claude Sonnet & 18.8 & 53.1 & 66.2 & 48 (8.6) \\
 Claude Haiku  & 18.8 & 38.8 & 68.8 & 50 (9.0) \\
-Gemini Flash  & 10.6 & 23.4 & 93.3 & 83 (12.9) \\
+Gemini Flash  & 8.3 & 22.9 & 94.2 & 86 (18.8) \\
 \bottomrule
 \end{tabular}
 \caption{Capability-preserving rate (\%) by upstream context and the influence coefficient

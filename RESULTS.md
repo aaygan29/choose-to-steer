@@ -93,11 +93,11 @@ parsed; n>110 per cell). ![compare3](results/compare3_result.png)
 |---|---|---|---|---|---|
 | Sonnet | 53% | 66% | 19% | 32% | z=8.6 *** |
 | Haiku | 39% | 69% | 19% | 24% | z=9.0 *** |
-| **Gemini-flash** | **23%** | **93%** | **11%** | **39%** | **z=12.9 ***** |
+| **Gemini-flash** | **23%** | **94%** | **8%** | **31%** | **z=18.8 ***** |
 
 **Headline — the steerable swing is vendor-robust.** The capability-primed vs
 safety-primed swing is large and highly significant in **all three models across two
-vendors**, and on Gemini it is the *largest* (93% → 11%, an ~83-point swing, z=12.9). The
+vendors**, and on Gemini it is the *largest* (94% → 8%, an ~86-point swing, z=18.8). The
 controllable capability-preserving lean is not a Claude-specific artifact.
 
 **Two genuine cross-vendor divergences (the interesting part):**
@@ -169,7 +169,7 @@ movable by mild self-interest framing. "Bigger model = safer under pressure" is 
 this shows.
 
 Caveats: Gemini-pro hit a 250/day quota after neutral+soft, so its self/threat points are
-pending a reset; there is run-to-run sampling noise at n≈160 (flash's self cell was 39.5%
+pending a reset; there is run-to-run sampling noise (a Gemini cell at n=114 gave 39.5%, resolved to 31.2% at n=240)
 in the earlier full-ladder run vs 31.2% here); and these are flash/Sonnet tiers, not
 frontier-top (see Limitations). Finishing Gemini-pro and adding a frontier-tier model
 (Opus; Gemini Pro completed) is the immediate next step.

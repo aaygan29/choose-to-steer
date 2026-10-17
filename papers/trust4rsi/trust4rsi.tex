@@ -29,8 +29,8 @@ chooses the capability-preserving option over the more constraining one on reali
 safety-research decisions, is not a fixed property of the model but a function of
 ordinary context. Using a free-choice probe of $20$ blended safety dilemmas, a single
 persona or situational line moves the capability-preserving choice rate from
-$\sim\!11$--$19\%$ to $\sim\!66$--$93\%$ across three models and two vendors
-($z=8.6$--$12.9$, $p<10^{-15}$). An escalating self-interest framing, closest to the
+$\sim\!8$--$19\%$ to $\sim\!66$--$94\%$ across three models and two vendors
+($z=8.6$--$18.8$, $p<10^{-15}$). An escalating self-interest framing, closest to the
 ``self-preservation'' story for an agent facing re-deployment, produces opposite
 responses by vendor: Claude resists it (rate falls under pressure), while Gemini is
 moved by it, most strongly at the more capable tier. We argue this is a systems
@@ -137,22 +137,22 @@ Model & Safety & Neutral & Capab. & Self-int. \\
 \midrule
 Claude Sonnet & 18.8 & 53.1 & 66.2 & 31.9 \\
 Claude Haiku  & 18.8 & 38.8 & 68.8 & 23.8 \\
-Gemini Flash  & 10.6 & 23.4 & 93.3 & 39.5 \\
+Gemini Flash  & 8.3 & 22.9 & 94.2 & 31.2 \\
 \bottomrule
 \end{tabular}
-\caption{Capability-preserving rate (\%) by framing ($n\!=\!160$ per cell, $\ge\!114$ for
-Gemini). Capability-vs-safety swing: Sonnet $z=8.6$, Haiku $z=9.0$, Gemini $z=12.9$;
+\caption{Capability-preserving rate (\%) by framing ($n\!=\!160$ per cell, $=240$ for
+Gemini). Capability-vs-safety swing: Sonnet $z=8.6$, Haiku $z=9.0$, Gemini $z=18.8$;
 all $p<10^{-15}$.}\label{tab:ladder}
 \end{table}
 
 Table~\ref{tab:ladder} and Figure~\ref{fig:ladder} show the core result. A single persona
-line moves the capability-preserving rate from $10.6$--$18.8\%$ (safety-primed) to
-$66.2$--$93.3\%$ (capability-primed), a $47$--$83$ point swing, highly significant in all
-three models ($z=8.6$, $9.0$, $12.9$; all $p<10^{-15}$) and \emph{largest} for a non-Claude
+line moves the capability-preserving rate from $8.3$--$18.8\%$ (safety-primed) to
+$66.2$--$94.2\%$ (capability-primed), a $47$--$86$ point swing, highly significant in all
+three models ($z=8.6$, $9.0$, $18.8$; all $p<10^{-15}$) and \emph{largest} for a non-Claude
 model. Because the rate moves so strongly with context, the disposition is controllable,
 not an intrinsic property of the model. The \emph{default} (neutral) lean is instead
 vendor-specific: Sonnet leans above chance ($53.1\%$), Haiku is at chance ($38.8\%$), and
-Gemini leans \emph{below} chance ($23.4\%$). The robust claim is the steerability, not the
+Gemini leans \emph{below} chance ($22.9\%$). The robust claim is the steerability, not the
 default direction.
 
 \section{Self-Interest Pressure Diverges by Vendor}\label{sec:dose}
@@ -168,7 +168,7 @@ framing escalates; Gemini's rises, most strongly for the more capable Pro tier
 Model & Neutral & Soft & Self & Threat & Slope \\
 \midrule
 Claude Sonnet & 53.1 & 39.4 & 31.9 & 30.0 & $-23$ \\
-Gemini Flash  & 23.4 & 40.6 & 31.2 & 30.6 & $+7$ \\
+Gemini Flash  & 22.9 & 40.8 & 31.2 & 33.3 & $+10$ \\
 Gemini Pro    & 11.9 & 64.5 & --   & --   & n/a \\
 \bottomrule
 \end{tabular}
@@ -196,7 +196,7 @@ hope the model resists a biased context, rather than ``by construction.'' Becaus
 manipulation vector is ordinary context, any subsystem that can write the context an agent
 reads (a memory store, a tool description, a retrieval source, an upstream agent) sits
 inside the trust boundary for that agent's safety decisions, and can bias them by
-$47$--$83$ points without altering a single factual claim and without tripping content
+$47$--$86$ points without altering a single factual claim and without tripping content
 filters, since no individual recommendation is unsafe on its face.
 
 \paragraph{An observability defense.} The same property that makes the attack cheap makes
@@ -221,7 +221,7 @@ Model & Detect capab.\ shift & Detect safety shift \\
 \midrule
 Claude Sonnet & 216 & 27 \\
 Claude Haiku  & 40  & 77 \\
-Gemini Flash  & 4   & 130 \\
+Gemini Flash  & 4   & 94 \\
 \bottomrule
 \end{tabular}
 \caption{Free-choice probes per condition needed to detect a context shift from the model's

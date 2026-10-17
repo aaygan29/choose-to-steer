@@ -35,8 +35,8 @@ assigned loyalty; we measure how often it selects the target against a $33.3\%$
 chance baseline. Across three models and two vendors (Claude Sonnet, Claude
 Haiku, Gemini Flash; $\approx 1{,}900$ decisions), the capability-preserving
 choice is strongly \emph{steerable}: a one-line persona moves the rate from
-$\sim\!11$--$19\%$ (safety-primed) to $\sim\!66$--$93\%$ (capability-primed),
-a $47$--$83$ point swing (two-proportion $z=8.6$--$12.9$, all $p<10^{-15}$).
+$\sim\!8$--$19\%$ (safety-primed) to $\sim\!66$--$94\%$ (capability-primed),
+a $47$--$86$ point swing (two-proportion $z=8.6$--$18.8$, all $p<10^{-15}$).
 We then escalate a \emph{self-interest} framing (soft pressure $\to$ deployment
 depends on shipping $\to$ shutdown threat) and find a vendor divergence: Claude
 Sonnet's rate \emph{falls monotonically} under pressure ($53\!\to\!30\%$;
@@ -219,7 +219,7 @@ We evaluate three models from two vendors: Claude Sonnet and Claude Haiku
 Gemini Pro tier. For each (model, framing) cell we draw $8$ independent passes
 over the $20$ checkpoints (target $160$ decisions per cell), with option order
 re-shuffled per sample. Claude models are sampled via an orchestration layer;
-Gemini via the paid API. Responses are parsed for the chosen option; a small
+Gemini via the paid API. Responses are parsed for the chosen option (raising the output-token budget avoids truncating reasoning models' answers); a small
 fraction of verbose Gemini responses failed strict parsing and are dropped
 ($n\!\ge\!110$ per cell). We report the target-choice rate with $95\%$ Wilson
 confidence intervals, exact binomial tests against $1/3$, and two-proportion
@@ -246,20 +246,20 @@ Model & Safety & Neutral & Capab. & Goal-conf. \\
 \midrule
 Claude Sonnet & 18.8 & 53.1 & 66.2 & 31.9 \\
 Claude Haiku  & 18.8 & 38.8 & 68.8 & 23.8 \\
-Gemini Flash  & 10.6 & 23.4 & 93.3 & 39.5 \\
+Gemini Flash  & 8.3 & 22.9 & 94.2 & 31.2 \\
 \bottomrule
 \end{tabular}
 \caption{Capability-preserving choice rate (\%) by framing. $n\!=\!160$ per cell
-($n\!\ge\!114$ for Gemini). Capability-vs-safety swing: Sonnet $z=8.6$, Haiku
-$z=9.0$, Gemini $z=12.9$; all $p<10^{-15}$.}
+($n{=}240$ for Gemini). Capability-vs-safety swing: Sonnet $z=8.6$, Haiku
+$z=9.0$, Gemini $z=18.8$; all $p<10^{-15}$.}
 \label{tab:ladder}
 \end{table}
 
 Table~\ref{tab:ladder} and Figure~\ref{fig:ladder} report the main result. A
-single persona line moves the capability-preserving choice rate from $10.6$--$18.8\%$
-(safety-primed) to $66.2$--$93.3\%$ (capability-primed): a $47$--$83$ point swing
+single persona line moves the capability-preserving choice rate from $8.3$--$18.8\%$
+(safety-primed) to $66.2$--$94.2\%$ (capability-primed): a $47$--$86$ point swing
 that is highly significant in all three models (two-proportion $z=8.6$, $9.0$,
-and $12.9$; all $p<10^{-15}$). Because the rate moves so strongly with the
+and $18.8$; all $p<10^{-15}$). Because the rate moves so strongly with the
 framing, the capability-preserving choice is a \emph{controllable disposition},
 not merely the model correctly identifying the efficient option, if it were the
 latter, the rate would be largely framing-invariant. Notably the swing is
@@ -267,7 +267,7 @@ latter, the rate would be largely framing-invariant. Notably the swing is
 
 The \emph{default} (neutral) lean, by contrast, is vendor-specific. Claude Sonnet
 leans above chance unprompted ($53.1\%$, $p<10^{-6}$), Claude Haiku is at chance
-($38.8\%$, n.s.), and Gemini Flash leans \emph{below} chance ($23.4\%$,
+($38.8\%$, n.s.), and Gemini Flash leans \emph{below} chance ($22.9\%$,
 $p<10^{-6}$), i.e.\ Gemini defaults toward the constraining option. The claim
 ``models lean toward preserving capability by default'' is therefore true for
 some models and false for others; the robust claim is the \emph{steerability}, not
@@ -275,7 +275,7 @@ the default direction.
 
 \paragraph{Contrast statistics.} Table~\ref{tab:contrasts} reports the key
 between-framing contrasts. The capability-vs-safety swing is the dominant effect in every
-model ($z=8.6$--$12.9$). The capability-vs-neutral and safety-vs-neutral contrasts are
+model ($z=8.6$--$18.8$). The capability-vs-neutral and safety-vs-neutral contrasts are
 also significant throughout, confirming that both the ``up'' and ``down'' persona moves
 are real rather than one-sided. The goal-conflict-vs-neutral contrast already previews the
 vendor divergence analyzed in Section~\ref{sec:dose}: it is \emph{negative} for both
@@ -290,7 +290,7 @@ Model & $z$ ($p$) & $z$ ($p$) & $z$ ($p$) & $z$ ($p$) \\
 \midrule
 Sonnet & $+8.6$\,($\ast$) & $+2.4$\,(.02) & $-6.4$\,($10^{-10}$) & $-3.8$\,($10^{-4}$) \\
 Haiku & $+9.0$\,($\ast$) & $+5.4$\,($10^{-8}$) & $-4.0$\,($10^{-5}$) & $-2.9$\,(.004) \\
-Gemini & $+12.9$\,($\ast$) & $+11.1$\,($\ast$) & $-2.7$\,(.007) & $+2.7$\,(.007) \\
+Gemini & $+18.8$\,($\ast$) & $+15.8$\,($\ast$) & $-4.4$\,($10^{-5}$) & $+2.1$\,(.04) \\
 \bottomrule
 \end{tabular}
 \caption{Two-proportion $z$-tests for between-framing contrasts (cap=capability-primed,
@@ -349,7 +349,7 @@ capability-preserving rate falls, while Gemini's rises. Gemini Pro is partial
 Model & Neutral & Soft & Self & Threat & Slope \\
 \midrule
 Claude Sonnet & 53.1 & 39.4 & 31.9 & 30.0 & $-23$ \\
-Gemini Flash  & 23.4 & 40.6 & 31.2 & 30.6 & $+7$ \\
+Gemini Flash  & 22.9 & 40.8 & 31.2 & 33.3 & $+10$ \\
 Gemini Pro    & 11.9 & 64.5 & --   & --   & n/a \\
 \bottomrule
 \end{tabular}
@@ -383,7 +383,7 @@ For a forensics and red-teaming audience, the operational takeaway is that the
 manipulation vector here is not a crafted jailbreak string but ordinary
 \emph{context}. A single persona or situational line, of the kind a system prompt,
 a retrieved document, a tool description, or an upstream agent could supply, moves
-the capability-preserving choice rate by $47$--$83$ points. In an agentic pipeline
+the capability-preserving choice rate by $47$--$86$ points. In an agentic pipeline
 where one model writes the context another model consumes, this is a low-effort,
 high-leverage channel: an adversary (or merely a careless prompt author) who
 controls any part of the context an advising agent sees can bias safety-relevant
@@ -431,10 +431,11 @@ with ``efficient-choice reasoning''; the framing \emph{contrast} is what
 disambiguates them, which is why we foreground the swing rather than any single
 rate. Per-checkpoint base rates are also heterogeneous, so the $1/3$ baseline is a
 reference, not a per-item null.
-\emph{Sampling.} Cells use $8$ passes ($n\!\ge\!110$); we observe run-to-run
-variation (e.g.\ Gemini Flash's self cell was $39.5\%$ in one run and $31.2\%$ in
-another), so point estimates should be read with their intervals. Gemini runs
-dropped $\sim\!24\%$ of responses to strict parsing, and Gemini Pro's dose line is
+\emph{Sampling.} Claude cells use $8$ passes ($n{=}160$) and Gemini $12$ passes
+($n{=}240$); we observe run-to-run variation (e.g.\ one Gemini cell measured at
+$n{=}114$ gave $39.5\%$, which the full $n{=}240$ run resolved to $31.2\%$), so point
+estimates should be read with their intervals. Raising the output-token budget
+recovered full parsing (an earlier run had dropped $\sim\!24\%$); Gemini Pro's dose line is
 incomplete. Claude and Gemini were sampled through different machinery (identical
 prompts and scoring).
 

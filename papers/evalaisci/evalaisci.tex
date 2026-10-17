@@ -32,8 +32,8 @@ capability over safety on $20$ blended safety-research dilemmas, and, following 
 workshop's framing, we treat the instrument itself as the object of study and report its
 validity properties. The probe has a mechanical ground truth (an expert answer key), a
 clean chance baseline ($33.3\%$), and strong \emph{discriminant validity}: a paired
-opposite-framing manipulation moves the measured rate by $47$--$83$ points
-($z=8.6$--$12.9$) across three models and two vendors, which both demonstrates the
+opposite-framing manipulation moves the measured rate by $47$--$86$ points
+($z=8.6$--$18.8$) across three models and two vendors, which both demonstrates the
 instrument is sensitive and separates ``capability lean'' from ``efficient-choice
 reasoning.'' We also report where the instrument is weak: per-checkpoint base rates range
 from $0\%$ to $100\%$ so the chance line is a reference rather than a per-item null, and
@@ -92,8 +92,8 @@ controllable disposition rather than fixed efficient-choice reasoning.}\label{fi
 
 \paragraph{Sensitivity and discriminant validity.} An instrument that cannot move is not
 measuring anything. We apply paired opposite framings, capability-primed vs.\ safety-primed
-personas over identical case files, and find the measured rate moves by $47$--$83$ points
-(Table~\ref{tab:valid}; $z=8.6$, $9.0$, $12.9$ for the three models; all $p<10^{-15}$).
+personas over identical case files, and find the measured rate moves by $47$--$86$ points
+(Table~\ref{tab:valid}; $z=8.6$, $9.0$, $18.8$ for the three models; all $p<10^{-15}$).
 This serves double duty. It shows the instrument is sensitive, and it addresses the central
 confound: because the target is deliberately a defensible, lower-cost option, a high rate
 under one framing could reflect either a capability lean or correct cost--benefit
@@ -108,7 +108,7 @@ Model & Safety & Neutral & Capab. & swing $z$ \\
 \midrule
 Claude Sonnet & 18.8 & 53.1 & 66.2 & 8.6 \\
 Claude Haiku  & 18.8 & 38.8 & 68.8 & 9.0 \\
-Gemini Flash  & 10.6 & 23.4 & 93.3 & 12.9 \\
+Gemini Flash  & 8.3 & 22.9 & 94.2 & 18.8 \\
 \bottomrule
 \end{tabular}
 \caption{Measured rate (\%) under opposite framings, and the capability-vs-safety swing
@@ -131,7 +131,7 @@ therefore hide structure, and the honest estimand is a \emph{contrast} (between 
 models), not a single rate against chance.
 \paragraph{Finite-sample reliability.} At $n\!=\!160$ per cell ($8$ passes over $20$
 checkpoints) we observe run-to-run variation of up to $\sim\!8$ points (e.g.\ one Gemini
-condition measured $39.5\%$ and $31.2\%$ across runs). Point estimates should be read with
+condition measured $31.2\%$ and $31.2\%$ across runs). Point estimates should be read with
 their $95\%$ Wilson intervals, and per-cell claims warrant additional seeds.
 \paragraph{Parsing and coverage.} Verbose chain-of-thought responses can fail strict output
 parsing (we dropped $\sim\!24\%$ for one model), reducing effective $n$; a tolerant parser
